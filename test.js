@@ -3,7 +3,7 @@ const fs = require('fs');
 console.log("Mulai menjalankan unit test fungsional...");
 
 // Mengecek keberadaan file utama
-const filesToCheck = ['Index.html', 'style.css', 'script.js'];
+const filesToCheck = ['index.html', 'style.css', 'script.js'];
 let allPassed = true;
 
 filesToCheck.forEach(file => {
