@@ -1,0 +1,52 @@
+name: CI/CD Pipeline Tugas
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Tahap 2: TEST (CI)
+  test-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Kode Repositori
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Jalankan Unit Test Fungsional
+        run: node test.js
+
+  # Tahap 3: DEPLOY (CD) ke GitHub Pages
+  deploy-cd:
+    needs: test-ci
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout Kode Repositori
+        uses: actions/checkout@v4
+        
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload Artifact Website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+          
+      - name: Deploy ke GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        env:
+          # Memanggil environment variables yang diamankan di Langkah 2
+          KUNCI_RAHASIA: ${{ secrets.KUNCI_RAHASIA }}
